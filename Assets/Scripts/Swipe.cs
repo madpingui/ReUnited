@@ -1,19 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
+
+public enum Direction { Left, Right, Down, Up }
 
 public class Swipe : MonoBehaviour {
 
-    private bool swipeLeft, swipeRight, swipeUp, swipeDown;
     private bool isDraging = false;
     private Vector2 startTouch, swipeDelta;
 
-	
-	// Update is called once per frame
-	void Update () 
-    {
-        swipeLeft = swipeDown = swipeRight = swipeUp = false;
+    public static event Action<Direction> OnSwipe;
 
+    // Update is called once per frame
+    void Update () 
+    {
         #region standalone input
         if (Input.GetMouseButtonDown(0))
         {
@@ -45,7 +44,8 @@ public class Swipe : MonoBehaviour {
 
 
         //calculating swipes
-        swipeDelta = Vector2.zero;
+        if(!isDraging)
+            swipeDelta = Vector2.zero;
         if (isDraging)
         {
             if(Input.touches.Length > 0)
@@ -66,12 +66,12 @@ public class Swipe : MonoBehaviour {
             {
                 if(x< 0)
                 {
-                    swipeLeft = true;
+                    OnSwipe?.Invoke(Direction.Left);
                     Reset();
                 }
                 else
                 {
-                    swipeRight = true;
+                    OnSwipe?.Invoke(Direction.Right);
                     Reset();
                 }
             }
@@ -79,12 +79,12 @@ public class Swipe : MonoBehaviour {
             {
                 if (y < 0)
                 {
-                    swipeDown = true;
+                    OnSwipe?.Invoke(Direction.Down);
                     Reset();
                 }
                 else
                 {
-                    swipeUp = true;
+                    OnSwipe?.Invoke(Direction.Up);
                     Reset();
                 }
             }
@@ -96,10 +96,4 @@ public class Swipe : MonoBehaviour {
         startTouch = swipeDelta = Vector2.zero;
         isDraging = false;
     }
-
-    public Vector2 SwipeDelta { get { return swipeDelta; } }
-    public bool SwipeLeft { get { return swipeLeft; } }
-    public bool SwipeRight { get { return swipeRight; } }
-    public bool SwipeUp { get { return swipeUp; } }
-    public bool SwipeDown { get { return swipeDown; } }
 }

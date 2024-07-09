@@ -44,46 +44,11 @@ public class stickyBall : MonoBehaviour {
         Instance = this;
         audioS = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
+        Swipe.OnSwipe += SwipeStickyBall;
     }
 
     private void FixedUpdate()
     {
-
-        if(GameController.Instance.once == true)
-        {
-            if (swipeController.SwipeUp)
-            {
-                rb.AddForce(new Vector3(0, 0, forceSwipe));
-                rb.AddTorque(new Vector3(forceSwipe, 0, 0));
-                audioS.clip = slide;
-                audioS.pitch = Random.Range(0.9f, 1.1f);
-                audioS.Play();
-            }
-            if (swipeController.SwipeDown)
-            {
-                rb.AddForce(new Vector3(0, 0, -forceSwipe));
-                rb.AddTorque(new Vector3(-forceSwipe, 0, 0));
-                audioS.clip = slide;
-                audioS.pitch = Random.Range(0.9f, 1.1f);
-                audioS.Play();
-            }
-            if (swipeController.SwipeLeft)
-            {
-                rb.AddForce(new Vector3(-forceSwipe, 0, 0));
-                rb.AddTorque(new Vector3(0, 0, forceSwipe));
-                audioS.clip = slide;
-                audioS.pitch = Random.Range(0.9f, 1.1f);
-                audioS.Play();
-            }
-            if (swipeController.SwipeRight)
-            {
-                rb.AddForce(new Vector3(forceSwipe, 0, 0));
-                rb.AddTorque(new Vector3(0, 0, -forceSwipe));
-                audioS.clip = slide;
-                audioS.pitch = Random.Range(0.9f, 1.1f);
-                audioS.Play();
-            }
-        }
         if (size >= nivel1 && nivel1Desbloq == false)
         {
             sizeUp.SetActive(true);
@@ -215,6 +180,36 @@ public class stickyBall : MonoBehaviour {
             rb.velocity = Vector3.zero;
             GetComponent<Animator>().SetTrigger("Die");
         }
+    }
+
+    private void SwipeStickyBall(Direction direction)
+    {
+        if (GameController.Instance.once != true)
+            return;
+
+        switch (direction)
+        {
+            case Direction.Left:
+                rb.AddForce(new Vector3(-forceSwipe, 0, 0));
+                rb.AddTorque(new Vector3(0, 0, forceSwipe));
+                break;
+            case Direction.Right:
+                rb.AddForce(new Vector3(forceSwipe, 0, 0));
+                rb.AddTorque(new Vector3(0, 0, -forceSwipe));
+                break;
+            case Direction.Down:
+                rb.AddForce(new Vector3(0, 0, -forceSwipe));
+                rb.AddTorque(new Vector3(-forceSwipe, 0, 0));
+                break;
+            case Direction.Up:
+                rb.AddForce(new Vector3(0, 0, forceSwipe));
+                rb.AddTorque(new Vector3(forceSwipe, 0, 0));
+                break;
+        }
+
+        audioS.clip = slide;
+        audioS.pitch = Random.Range(0.9f, 1.1f);
+        audioS.Play();
     }
 
     public void Die()
