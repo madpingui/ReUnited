@@ -60,7 +60,7 @@ public class stickyBall : MonoBehaviour {
             nivel2Desbloq = true;
         }
 
-        cameraReference.transform.position = Vector3.Slerp(cameraReference.transform.position, new Vector3(0, distanceToCamera * (1 + rb.velocity.magnitude/10), -distanceToCamera * (1 + rb.velocity.magnitude/10)) + this.transform.position, 0.05f);
+        cameraReference.transform.position = Vector3.Slerp(cameraReference.transform.position, new Vector3(0, distanceToCamera * (1 + rb.linearVelocity.magnitude/10), -distanceToCamera * (1 + rb.linearVelocity.magnitude/10)) + this.transform.position, 0.05f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -102,7 +102,7 @@ public class stickyBall : MonoBehaviour {
             {
                 int hijos = transform.childCount;
 
-                rb.velocity = -rb.velocity;
+                rb.linearVelocity = -rb.linearVelocity;
                 for (int i = 0; i < Mathf.RoundToInt(hijos / 3); i++)
                 {
                     GameObject go = transform.GetChild(Random.Range(2, transform.childCount)).gameObject;
@@ -144,7 +144,7 @@ public class stickyBall : MonoBehaviour {
             {
                 int hijos = transform.childCount;
 
-                rb.velocity = -rb.velocity;
+                rb.linearVelocity = -rb.linearVelocity;
                 for (int i = 0; i < Mathf.RoundToInt(hijos / 3); i++)
                 {
                     GameObject go = transform.GetChild(Random.Range(2, transform.childCount)).gameObject;
@@ -177,7 +177,7 @@ public class stickyBall : MonoBehaviour {
         }
         if (other.transform.CompareTag("Hole"))
         {
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
             GetComponent<Animator>().SetTrigger("Die");
         }
     }
